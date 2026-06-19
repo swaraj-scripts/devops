@@ -1,3 +1,4 @@
+sudo update-alternatives —config java
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -89,6 +90,53 @@
   </build>
 </project>
 
+
+
+3
+>>> mkdir gradlepro
+>>> cd gradlepro
+
+>>> gradle init --type java-application
+>>> gradle build
+>>> gradle run
+
+#########################  Task in Gradle ######################### 
+Step1:
+go to build.gradle and below dependencies paste this
+task hello{
+	doLast{ println "Hello, Gradle!"
+	}
+}
+
+>>> gradle build
+>>> gradle hello
+
+
+If version is fucked
+sudo update-alternatives —config java
+
+
+4
+mvn archetype:generate -DgroupId=in.tcs -DartifactId=mvn_lab4 -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.5 -DinteractiveMode=False
+
+In pom.xml:
+    <maven.compiler.release>11</maven.compiler.release>
+
+>>> cd mvn_lab4
+>>> mvn package
+>>> java -cp target/mvn_lab4-1.0-SNAPSHOT.jar in.tcs.App
+
+>>> gradle init --type pom
+>>> gradle build
+
+in build.gradle change
+apply plugin: 'application'
+
+sourceCompatibility = 6
+targetCompatibility = 1.6
+mainClassName="in.tcs.App" (add this at the end)
+
+graddle run
 
 
 
