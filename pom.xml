@@ -88,3 +88,130 @@
     </pluginManagement>
   </build>
 </project>
+
+
+
+
+>>> (base) student@csel506sys19-OptiPlex-3090:~/1CR23CS195/lab4$ mvn archetype:generate -DgroupId=in.tcs -DartifactId=mvn_lab6 -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.5 -DinteractiveMode=False
+
+>>> cd mvn_lab6
+>>> mvn_lab6$ mvn package
+
+>>> git config --global user.name "swaraj-scripts" 
+>>> git config --global user.email "swsa23cs@cmrit.ac.in"
+>>> git init
+>>> git add pom.xml
+>>> git add src
+>>> ssh-keygen -t ed25519 -C "swsa23cs@cmrit.ac.in"
+>>> sudo cat /home/student/.ssh/id_ed25519.pub (To get key)
+
+>>> git commit -m "I'm Swaraj"
+ 
+ create github repo
+ >>> git remote add origin git@github.com:swaraj-scripts/devops_lab6
+ 
+>>> git config --global push.autoSetupRemote true
+>>> git branch -M main
+>>> git push origin main (Incase of warning)
+>>> mvn_lab6$ git pull --rebase origin main
+
+
+go to jenkins dashboard
+>>> In chrome localhost:8080
+Username: Admin	
+Password: 
+>>> sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+ded3c88839504a948841a2d95395ba38
+
+Open Dashboard in chrome - localhost:8080
+
+click new and give name and choose pipeline click ok
+go to scripts and type this
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/swaraj-scripts/devops_lab6.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+    }
+}
+
+
+
+
+8
+pipeline {
+agent any
+stages {
+    stage("Checkout") {
+        steps {
+            git branch: "main", url: "https://github.com/swaraj-scripts/devops_lab8.git"
+        }
+    }
+
+    stage("Build") {
+        steps {
+            sh "mvn clean package"
+        }
+    }
+
+    stage("Test") {
+        steps {
+            sh "mvn test"
+        }
+    }
+
+    stage("Archive Artifacts") {
+        steps {
+            archiveArtifacts artifacts: "**/target/*.jar", allowEmptyArchive: true
+        }
+    }
+
+    stage("Deploy") {
+        steps {
+            sh """
+            export ANSIBLE_HOST_KEY_CHECKING=False
+            ansible-playbook -i host.ini deploy.yml --extra-vars="ansible_become_pass=exam@cse"
+            """
+        }
+    }
+}
+
+}
+
+inside lab8
+>>> sudo gedit host.ini 
+[local]
+localhost ansible_connection=local
+
+>>> sudo gedit deploy.yml
+---
+- name: Deploy artifact to localhost
+  hosts: localhost
+  tasks:
+  - name: Copy the artifact to the target location
+    become: true
+    become_user: student
+    become_method: su
+    copy:
+      src: "/var/lib/jenkins/workspace/lab8/target/mvn_lab2-1.0-SNAPSHOT.jar"
+      dest: "/home/student/1CR23CS195/lab8/mvn_lab2"
+
+
